@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unload unload_date="2018-06-04 13:43:01">
+<sys_remote_update_set action="INSERT_OR_UPDATE">
+<application display_value="Global">global</application>
+<application_name>Global</application_name>
+<application_scope>global</application_scope>
+<application_version/>
+<collisions/>
+<commit_date/>
+<deleted/>
+<description>Add Group to Update set utility for adding groups, members and assigned roles to the current update set</description>
+<inserted/>
+<name>Add Group to Update set</name>
+<origin_sys_id/>
+<parent display_value=""/>
+<release_date/>
+<remote_base_update_set display_value=""/>
+<remote_parent_id/>
+<remote_sys_id>10d3c4f04f62130044e44a318110c7a0</remote_sys_id>
+<state>loaded</state>
+<summary/>
+<sys_class_name>sys_remote_update_set</sys_class_name>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2018-06-04 13:43:01</sys_created_on>
+<sys_id>487a08b44f62130044e44a318110c730</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2018-06-04 13:43:01</sys_updated_on>
+<update_set display_value=""/>
+<update_source display_value=""/>
+<updated/>
+</sys_remote_update_set>
+<sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_ui_page_d49480b04f62130044e44a318110c7ea</name>
+<payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_ui_page"&gt;&lt;sys_ui_page action="INSERT_OR_UPDATE"&gt;&lt;category&gt;general&lt;/category&gt;&lt;client_script/&gt;&lt;description&gt;Select options for adding a group to an update set.&amp;#13;
+- show current udpate set (read-only)&amp;#13;
+- include members&amp;#13;
+- include roles&amp;#13;
+- include user roles&lt;/description&gt;&lt;direct&gt;false&lt;/direct&gt;&lt;endpoint/&gt;&lt;html&gt;&lt;![CDATA[&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null"&gt;
+	&lt;g:evaluate var="jvar_selected_groups" expression="RP.getWindowProperties().get('selected_groups')" /&gt;
+	&lt;g:evaluate var="jvar_current_update_set" expression="new global.GlideUpdateSet().get()" /&gt;
+	&lt;g:evaluate var="jvar_current_update_set_name"&gt;
+		var grUpdateSet = new GlideRecord('sys_update_set');
+		grUpdateSet.get(new global.GlideUpdateSet().get());
+		grUpdateSet.name
+	&lt;/g:evaluate&gt;
+	
+	&lt;g:ui_form&gt;
+		&lt;h2&gt;Choose options for adding the selected group(s) to Update set: ${jvar_current_update_set_name}&lt;/h2&gt;
+		
+		&lt;p&gt;
+			&lt;label for="include_members"&gt;
+				&lt;input type="checkbox" id="include_members" name="include_members" checked="checked" value="true" onClick="setCheckBox(this);"/&gt; Include group members?
+			&lt;/label&gt;
+		&lt;/p&gt;
+		
+		&lt;p&gt;
+			&lt;label for="include_group_roles"&gt;
+				&lt;input type="checkbox" id="include_group_roles" name="include_group_roles" checked="checked" value="true" onClick="setCheckBox(this);"/&gt; Include group roles?
+			&lt;/label&gt;
+		&lt;/p&gt;
+		
+		&lt;p&gt;
+			&lt;label for="include_user_roles"&gt;
+				&lt;input type="checkbox" id="include_user_roles" name="include_user_roles" checked="checked" value="true" onClick="setCheckBox(this);"/&gt;  Include user roles?
+			&lt;/label&gt;
+		&lt;/p&gt;
+		
+		&lt;input type="hidden" name="selected_groups" id="selected_groups" value="${jvar_selected_groups}" /&gt;
+		&lt;p&gt;
+			&lt;g:dialog_buttons_ok_cancel ok="return true" /&gt;
+		&lt;/p&gt;
+		
+	&lt;/g:ui_form&gt;
+&lt;/j:jelly&gt;]]&gt;&lt;/html&gt;&lt;name&gt;add_group_to_update_set_options&lt;/name&gt;&lt;processing_script&gt;&lt;![CDATA[var urlOnStack = GlideSession.get().getStack().bottom();
+var updateSetUtil = new UpdateSetUtil();
+
+if (update_set != '') {
+	// Add user group records to update set
+	updateSetUtil.addRecordsToUpdateSet('sys_user_group', 'sys_idIN' + selected_groups);
+	
+	// Add user group member records to update set
+	if (include_members)
+		updateSetUtil.addRecordsToUpdateSet('sys_user_grmember', 'groupIN' + selected_groups);
+	// Add user group role records to update set
+	if (include_group_roles)
+		updateSetUtil.addRecordsToUpdateSet('sys_group_has_role', 'groupIN' + selected_groups);
+	// Add user roles granted by group to update set
+	if (include_user_roles)
+		updateSetUtil.addRecordsToUpdateSet('sys_user_has_role', 'granted_byIN' + selected_groups);
+}
+else {
+	gs.addErrorMessage(gs.getMessage('Please select an update set other than the Default update set'));
+}
+
+response.sendRedirect(urlOnStack);]]&gt;&lt;/processing_script&gt;&lt;sys_class_name&gt;sys_ui_page&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2018-06-04 13:17:56&lt;/sys_created_on&gt;&lt;sys_id&gt;d49480b04f62130044e44a318110c7ea&lt;/sys_id&gt;&lt;sys_mod_count&gt;1&lt;/sys_mod_count&gt;&lt;sys_name&gt;add_group_to_update_set_options&lt;/sys_name&gt;&lt;sys_package display_value="Global" source="global"&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="Global"&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_ui_page_d49480b04f62130044e44a318110c7ea&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2018-06-04 13:37:23&lt;/sys_updated_on&gt;&lt;/sys_ui_page&gt;&lt;/record_update&gt;</payload>
+<payload_hash>-1805045028</payload_hash>
+<remote_update_set display_value="Add Group to Update set">487a08b44f62130044e44a318110c730</remote_update_set>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2018-06-04 13:43:01</sys_created_on>
+<sys_id>087a08b44f62130044e44a318110c731</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>163cb0441a80000001</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2018-06-04 13:43:01</sys_updated_on>
+<table/>
+<target_name>add_group_to_update_set_options</target_name>
+<type>UI Page</type>
+<update_domain>global</update_domain>
+<update_guid>e52904b4b0621300661ff611b9c0af86</update_guid>
+<update_guid_history>e52904b4b0621300661ff611b9c0af86:-1805045028,70b40034ca621300a278ceca5631cc08:-1742858121</update_guid_history>
+<update_set display_value=""/>
+<view/>
+</sys_update_xml>
+<sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_ui_action_71c4ccf04f62130044e44a318110c739</name>
+<payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update sys_domain="global" table="sys_ui_action"&gt;&lt;sys_ui_action action="INSERT_OR_UPDATE"&gt;&lt;action_name&gt;add_to_update_set&lt;/action_name&gt;&lt;active&gt;true&lt;/active&gt;&lt;client&gt;true&lt;/client&gt;&lt;comments/&gt;&lt;condition/&gt;&lt;form_action&gt;true&lt;/form_action&gt;&lt;form_button&gt;true&lt;/form_button&gt;&lt;form_context_menu&gt;false&lt;/form_context_menu&gt;&lt;form_link&gt;false&lt;/form_link&gt;&lt;form_style&gt;primary&lt;/form_style&gt;&lt;hint&gt;Add group(s) including members and roles to the current update set&lt;/hint&gt;&lt;list_action&gt;true&lt;/list_action&gt;&lt;list_banner_button&gt;false&lt;/list_banner_button&gt;&lt;list_button&gt;false&lt;/list_button&gt;&lt;list_choice&gt;true&lt;/list_choice&gt;&lt;list_context_menu&gt;false&lt;/list_context_menu&gt;&lt;list_link&gt;false&lt;/list_link&gt;&lt;list_save_with_form_button&gt;false&lt;/list_save_with_form_button&gt;&lt;list_style&gt;primary&lt;/list_style&gt;&lt;name&gt;Add to Update Set&lt;/name&gt;&lt;onclick&gt;chooseOptions();&lt;/onclick&gt;&lt;order&gt;100&lt;/order&gt;&lt;script&gt;&lt;![CDATA[function chooseOptions() {
+	var sysIDs = "";
+	if (g_form) {
+		sysIDs = g_form.getUniqueValue();
+	}
+	if (g_list) {
+		sysIDs = g_list.getChecked();
+	}
+	
+	//alert('sysIDs = ' + sysIDs);
+	var gdw = new GlideModal('add_group_to_update_set_options');
+	gdw.setTitle('Select options for adding group(s) to the current update set');
+	gdw.setPreference('selected_groups', sysIDs);
+	gdw.render();
+}]]&gt;&lt;/script&gt;&lt;show_insert&gt;true&lt;/show_insert&gt;&lt;show_multiple_update&gt;false&lt;/show_multiple_update&gt;&lt;show_query&gt;false&lt;/show_query&gt;&lt;show_update&gt;true&lt;/show_update&gt;&lt;sys_class_name&gt;sys_ui_action&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2018-06-04 13:30:22&lt;/sys_created_on&gt;&lt;sys_domain&gt;global&lt;/sys_domain&gt;&lt;sys_domain_path/&gt;&lt;sys_id&gt;71c4ccf04f62130044e44a318110c739&lt;/sys_id&gt;&lt;sys_mod_count&gt;0&lt;/sys_mod_count&gt;&lt;sys_name&gt;Add to Update Set&lt;/sys_name&gt;&lt;sys_overrides/&gt;&lt;sys_package display_value="Global" source="global"&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="Global"&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_ui_action_71c4ccf04f62130044e44a318110c739&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2018-06-04 13:30:22&lt;/sys_updated_on&gt;&lt;table&gt;sys_user_group&lt;/table&gt;&lt;ui11_compatible&gt;true&lt;/ui11_compatible&gt;&lt;ui16_compatible&gt;true&lt;/ui16_compatible&gt;&lt;/sys_ui_action&gt;&lt;/record_update&gt;</payload>
+<payload_hash>-2143902909</payload_hash>
+<remote_update_set display_value="Add Group to Update set">487a08b44f62130044e44a318110c730</remote_update_set>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2018-06-04 13:43:01</sys_created_on>
+<sys_id>447a08b44f62130044e44a318110c731</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>163cafdd47e0000001</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2018-06-04 13:43:01</sys_updated_on>
+<table>sys_user_group</table>
+<target_name>Add to Update Set</target_name>
+<type>UI Action</type>
+<update_domain>global</update_domain>
+<update_guid>3a878cf0d06213007c249da985495fa1</update_guid>
+<update_guid_history>3a878cf0d06213007c249da985495fa1:-2143902909</update_guid_history>
+<update_set display_value=""/>
+<view/>
+</sys_update_xml>
+<sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_script_include_2af344f04f62130044e44a318110c7fb</name>
+<payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_script_include"&gt;&lt;sys_script_include action="INSERT_OR_UPDATE"&gt;&lt;access&gt;package_private&lt;/access&gt;&lt;active&gt;true&lt;/active&gt;&lt;api_name&gt;global.UpdateSetUtil&lt;/api_name&gt;&lt;client_callable&gt;false&lt;/client_callable&gt;&lt;description&gt;Helper functions for adding data (non-process records) to update sets&lt;/description&gt;&lt;name&gt;UpdateSetUtil&lt;/name&gt;&lt;script&gt;&lt;![CDATA[var UpdateSetUtil = Class.create();
+UpdateSetUtil.prototype = {
+    initialize: function() {
+    },
+	
+	addRecordsToUpdateSet: function(tableName, encodedQuery) {
+		var grTable = new GlideRecord(tableName);
+		grTable.addEncodedQuery(encodedQuery);
+		grTable.query();
+		//Push the records into the current update set
+		var um = new GlideUpdateManager2();
+
+		while (grTable.next()) {
+			um.saveRecord(grTable);
+		}
+	},
+
+    type: 'UpdateSetUtil'
+};
+]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;sys_script_include&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2018-06-04 13:15:39&lt;/sys_created_on&gt;&lt;sys_id&gt;2af344f04f62130044e44a318110c7fb&lt;/sys_id&gt;&lt;sys_mod_count&gt;1&lt;/sys_mod_count&gt;&lt;sys_name&gt;UpdateSetUtil&lt;/sys_name&gt;&lt;sys_package display_value="Global" source="global"&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="Global"&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_script_include_2af344f04f62130044e44a318110c7fb&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2018-06-04 13:36:11&lt;/sys_updated_on&gt;&lt;/sys_script_include&gt;&lt;/record_update&gt;</payload>
+<payload_hash>421420816</payload_hash>
+<remote_update_set display_value="Add Group to Update set">487a08b44f62130044e44a318110c730</remote_update_set>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2018-06-04 13:43:01</sys_created_on>
+<sys_id>8c7a08b44f62130044e44a318110c730</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>163cb0328cc0000001</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2018-06-04 13:43:01</sys_updated_on>
+<table/>
+<target_name>UpdateSetUtil</target_name>
+<type>Script Include</type>
+<update_domain>global</update_domain>
+<update_guid>8ce800b417621300d81d945cb9d0a598</update_guid>
+<update_guid_history>8ce800b417621300d81d945cb9d0a598:421420816,4b2480b0f36213001cb4c6ce55780d3b:2054707701</update_guid_history>
+<update_set display_value=""/>
+<view/>
+</sys_update_xml>
+</unload>
